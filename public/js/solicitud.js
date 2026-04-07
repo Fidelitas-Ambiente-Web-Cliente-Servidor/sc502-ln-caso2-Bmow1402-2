@@ -5,8 +5,6 @@ $(function(){
     cargarSolicitudes();
     
     function cargarSolicitudes(){
-        console.log("Cargando solicitudes...");
-        
         $.ajax({
             url: urlBase,
             type: "GET",
@@ -15,57 +13,49 @@ $(function(){
             },
             dataType: "json",
             success: function(data){
-                console.log("Datos recibidos:", data);
-                
                 let html = "";
                 
                 if(!data || data.length === 0){
-                    html = `<tr>
-                                <td colspan="5" style="text-align: center;">
-                                    No hay solicitudes pendientes
-                                </td>
-                            </tr>`;
+                    html = `<tr><td colspan="5" style="text-align: center;">No hay solicitudes</td></tr>`;
                 } else {
-                    for(let i = 0; i < data.length; i++) {
-                        let s = data[i];
-                        console.log("Solicitud:", s.id, s.username, s.nombre_taller);
+                    data.forEach(function(s){
+                        let estadoClass = "";
+                        let estadoText = "";
+                        let botones = "";
+                        
+                        if(s.estado === 'pendiente'){
+                            estadoClass = "estado-pendiente";
+                            estadoText = "⏳ Pendiente";
+                            botones = `
+                                <button class="btn-aprobar" onclick="aprobar(${s.id})"> Aprobar</button>
+                                <button class="btn-rechazar" onclick="rechazar(${s.id})"> Rechazar</button>
+                            `;
+                        } else if(s.estado === 'aprobada'){
+                            estadoClass = "estado-aprobada";
+                            estadoText = "Aprobada";
+                            botones = `<span style="color: green;"> Procesada</span>`;
+                        } else {
+                            estadoClass = "estado-rechazada";
+                            estadoText = " Rechazada";
+                            botones = `<span style="color: red;"> Procesada</span>`;
+                        }
                         
                         html += `
                         <tr>
                             <td>${s.username || 'N/A'}</td>
                             <td>${s.nombre_taller || 'N/A'}</td>
                             <td>${s.fecha_solicitud || 'N/A'}</td>
-                            <td>
-                                <span class="estado estado-pendiente">
-                                    Pendiente
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn-aprobar" onclick="aprobar(${s.id})">
-                                     Aprobar
-                                </button>
-                                <button class="btn-rechazar" onclick="rechazar(${s.id})">
-                                     Rechazar
-                                </button>
-                            </td>
+                            <td><span class="${estadoClass}">${estadoText}</span></td>
+                            <td>${botones}</td>
                         </tr>
                         `;
-                    }
+                    });
                 }
                 
                 $("#solicitudes-body").html(html);
             },
-            error: function(xhr, status, error){
-                console.error("Error al cargar solicitudes:", error);
-                console.log("Respuesta del servidor:", xhr.responseText);
-                
-                $("#solicitudes-body").html(`
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: red;">
-                            Error al cargar solicitudes
-                        </td>
-                    </tr>
-                `);
+            error: function(){
+                $("#solicitudes-body").html('<tr><td colspan="5">Error al cargar</td></tr>');
             }
         });
     }
@@ -82,14 +72,11 @@ $(function(){
                 dataType: "json",
                 success: function(response){
                     if(response.success){
-                        alert(' Solicitud aprobada exitosamente');
+                        alert(' ' + response.message);
                         cargarSolicitudes(); // Recargar la lista
                     } else {
-                        alert(' Error: ' + (response.message || 'No se pudo aprobar'));
+                        alert(' Error: ' + response.message);
                     }
-                },
-                error: function(xhr){
-                    alert('Error: ' + xhr.responseText);
                 }
             });
         }
@@ -107,14 +94,11 @@ $(function(){
                 dataType: "json",
                 success: function(response){
                     if(response.success){
-                        alert('❌ Solicitud rechazada');
+                        alert(' ' + response.message);
                         cargarSolicitudes(); // Recargar la lista
                     } else {
-                        alert('Error: ' + (response.message || 'No se pudo rechazar'));
+                        alert('Error: ' + response.message);
                     }
-                },
-                error: function(xhr){
-                    alert('Error: ' + xhr.responseText);
                 }
             });
         }

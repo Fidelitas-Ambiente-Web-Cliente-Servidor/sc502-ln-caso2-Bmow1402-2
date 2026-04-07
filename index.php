@@ -11,23 +11,36 @@ require_once './app/models/User.php';
 $page = $_GET['page'] ?? 'home';
 
 // ========== RUTAS GET OBTENER DATOS ==========
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
-    // Obtener listado de talleres
-    if (isset($_GET['option']) && $_GET['option'] == "talleres_json") {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['option'])) {
+    
+    // Obtener listado de talleres (para usuario normal)
+    if ($_GET['option'] == "talleres_json") {
         $taller = new TallerController();
         $taller->getTalleresJson();
         exit;
     }
+    
+    // Obtener TODOS los talleres (para admin)
+    if ($_GET['option'] == "admin_talleres_json") {
+        $admin = new AdminController();
+        $admin->getTalleresJson();
+        exit;
+    }
 
-    // Obtener solicitudes pendientes
-    if (isset($_GET['option']) && $_GET['option'] == "solicitudes_json") {
+    // Obtener solicitudes (todas para admin)
+    if ($_GET['option'] == "solicitudes_json") {
         $admin = new AdminController();
         $admin->getSolicitudesJson();
         exit;
     }
+    
+    // Obtener mis solicitudes (para usuario)
+    if ($_GET['option'] == "mis_solicitudes_json") {
+        $taller = new TallerController();
+        $taller->getMisSolicitudesJson();
+        exit;
+    }
 }
-
 // ========== RUTAS FORMULARIO POST ==========
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

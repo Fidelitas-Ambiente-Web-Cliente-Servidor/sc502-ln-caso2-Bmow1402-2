@@ -22,6 +22,20 @@ class Taller
         return $data;
     }
 
+    // Obtener TODOS los talleres (incluyendo sin cupos) para admin
+    public function getAll()
+    {
+        $query = "SELECT * FROM talleres ORDER BY id";
+        $result = $this->conn->query($query);
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        
+        return $data;
+    }
+
     public function getById($id)
     {
         $query = "SELECT * FROM talleres WHERE id = ?";

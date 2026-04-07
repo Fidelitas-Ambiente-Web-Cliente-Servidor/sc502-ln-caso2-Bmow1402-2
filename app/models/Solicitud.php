@@ -36,55 +36,103 @@ class Solicitud
         return $stmt->execute();
     }
 
-   public function getPendientes()
-{
-    $query = "SELECT 
-                s.id,
-                u.username,
-                t.nombre AS nombre_taller,
-                s.fecha_solicitud,
-                s.estado
-              FROM solicitudes s
-              INNER JOIN usuarios u ON u.id = s.usuario_id
-              INNER JOIN talleres t ON t.id = s.taller_id
-              WHERE s.estado = 'pendiente'
-              ORDER BY s.fecha_solicitud DESC";
+    // Obtener SOLO solicitudes PENDIENTES (para admin aprobar/rechazar)
+    public function getPendientes()
+    {
+        $query = "SELECT 
+                    s.id,
+                    u.username,
+                    t.nombre AS nombre_taller,
+                    s.fecha_solicitud,
+                    s.estado
+                  FROM solicitudes s
+                  INNER JOIN usuarios u ON u.id = s.usuario_id
+                  INNER JOIN talleres t ON t.id = s.taller_id
+                  WHERE s.estado = 'pendiente'
+                  ORDER BY s.fecha_solicitud DESC";
 
-    $result = $this->conn->query($query);
-    
-    if (!$result) {
-        return [];
+        $result = $this->conn->query($query);
+        
+        if (!$result) {
+            return [];
+        }
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        
+        return $data;
     }
-    
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-    
-    return $data;
-}
 
+    // Obtener TODAS las solicitudes (para admin ver historial)
+    // Obtener TODAS las solicitudes (para admin)
     public function getTodas()
     {
         $query = "SELECT 
                     s.id,
                     u.username,
-                    t.nombre AS taller_nombre,
+                    t.nombre AS nombre_taller,
                     s.fecha_solicitud,
                     s.estado
-                  FROM solicitudes s
-                  JOIN usuarios u ON u.id = s.usuario_id
-                  JOIN talleres t ON t.id = s.taller_id
-                  ORDER BY s.fecha_solicitud DESC";
+                FROM solicitudes s
+                INNER JOIN usuarios u ON u.id = s.usuario_id
+                INNER JOIN talleres t ON t.id = s.taller_id
+                ORDER BY s.fecha_solicitud DESC";
 
         $result = $this->conn->query($query);
-
+        
+        if (!$result) {
+            return [];
+        }
+        
         $data = [];
-
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
+        
+        return $data;
+    }
 
+// Verificar si un usuario fue rechazado en un taller específico
+public function fueRechazado($usuarioId, $tallerId)
+{
+    $query = "SELECT id FROM solicitudes 
+              WHERE usuario_id = ? 
+              AND taller_id = ? 
+              AND estado = 'rechazada'";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("ii", $usuarioId, $tallerId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->num_rows > 0;
+}
+
+    // Obtener solicitudes de un usuario específico
+    public function getByUsuario($usuarioId)
+    {
+        $query = "SELECT 
+                    s.id,
+                    t.nombre AS nombre_taller,
+                    s.fecha_solicitud,
+                    s.estado
+                  FROM solicitudes s
+                  INNER JOIN talleres t ON t.id = s.taller_id
+                  WHERE s.usuario_id = ?
+                  ORDER BY s.fecha_solicitud DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $usuarioId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        
         return $data;
     }
 

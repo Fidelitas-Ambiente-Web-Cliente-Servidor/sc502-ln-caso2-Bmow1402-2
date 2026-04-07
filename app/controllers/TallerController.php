@@ -27,34 +27,54 @@ class TallerController
     }
     
     public function getTalleresJson()
-    {
-        if (!isset($_SESSION['id'])) {
-            echo json_encode([]);
-            return;
-        }
-        
-        $talleres = $this->tallerModel->getAllDisponibles();
-        header('Content-Type: application/json');
-        echo json_encode($talleres);
-    }
-    
-    public function solicitar()
 {
     if (!isset($_SESSION['id'])) {
-        echo json_encode(['success' => false, 'error' => 'Debes iniciar sesión']);
+        echo json_encode([]);
         return;
     }
-
-    $tallerId = $_POST['taller_id'];
+    
     $usuarioId = $_SESSION['id'];
-
-    // crear solicitud en estado pendiente
-    $result = $this->solicitudModel->crear($usuarioId, $tallerId);
-
-    if ($result) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'No se pudo enviar solicitud']);
+    $talleres = $this->tallerModel->getAllDisponibles();
+    
+    // Verificar si el usuario fue rechazado en cada taller
+    foreach ($talleres as &$taller) {
+        $taller['fue_rechazado'] = $this->solicitudModel->fueRechazado($usuarioId, $taller['id']);
     }
+    
+    header('Content-Type: application/json');
+    echo json_encode($talleres);
 }
+
+public function getMisSolicitudesJson()
+{
+    if (!isset($_SESSION['id'])) {
+        echo json_encode([]);
+        return;
+    }
+    
+    $usuarioId = $_SESSION['id'];
+    $solicitudes = $this->solicitudModel->getByUsuario($usuarioId);
+    
+    header('Content-Type: application/json');
+    echo json_encode($solicitudes);
+}
+    
+    public function solicitar()
+    {
+        if (!isset($_SESSION['id'])) {
+            echo json_encode(['success' => false, 'error' => 'Debes iniciar sesión']);
+            return;
+        }
+
+        $tallerId = $_POST['taller_id'];
+        $usuarioId = $_SESSION['id'];
+
+        $result = $this->solicitudModel->crear($usuarioId, $tallerId);
+
+        if ($result) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Ya solicitaste este taller o ya estás inscrito']);
+        }
+    }
 }

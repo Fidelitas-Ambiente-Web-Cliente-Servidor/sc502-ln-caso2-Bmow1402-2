@@ -39,21 +39,29 @@ class UserController
 
             echo json_encode(['response' => "00", 'rol' => $user['rol'], 'message' => "Login exitoso"]);
         } else {
-            echo json_encode(['response' => "01", 'message' => "Error de autentificacion"]);
+            echo json_encode(['response' => "01", 'message' => "Usuario o contraseña incorrectos"]);
         }
     }
 
     public function registro()
     {
         $username = $_POST['username'];
+        
+        // Verificar si el usuario ya existe
+        $existingUser = $this->model->login($username);
+        if ($existingUser) {
+            echo json_encode(['response' => "01", 'message' => "El usuario ya existe. Por favor elige otro"]);
+            return;
+        }
+        
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
         $result = $this->model->create($username, $password);
 
         if ($result) {
-            echo json_encode(['response' => "00", 'message' => "Registro exitoso"]);
+            echo json_encode(['response' => "00", 'message' => "Registro exitoso. Redirigiendo al login..."]);
         } else {
-            echo json_encode(['response' => "01", 'message' => "Error al registrar"]);
+            echo json_encode(['response' => "01", 'message' => "Error al registrar. Intenta de nuevo"]);
         }
     }
 

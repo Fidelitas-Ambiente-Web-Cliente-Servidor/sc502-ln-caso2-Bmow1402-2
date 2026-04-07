@@ -27,23 +27,41 @@ class AdminController
         require __DIR__ . '/../views/admin/solicitudes.php';
     }
 
+    // Obtener TODAS las solicitudes (pendientes, aprobadas, rechazadas)
     public function getSolicitudesJson()
-{
-    // ver si el usuario está logueado y es admin
-    if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
-        echo json_encode(['error' => 'No autorizado']);
-        return;
+    {
+        if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
+            echo json_encode(['error' => 'No autorizado']);
+            return;
+        }
+        
+        $data = $this->solicitudModel->getTodas();
+        
+        if (!$data) {
+            $data = [];
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
-    
-    $data = $this->solicitudModel->getPendientes();
-    
-    if (!$data) {
-        $data = [];
+
+    // Obtener todos los talleres para admin
+    public function getTalleresJson()
+    {
+        if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'admin') {
+            echo json_encode(['error' => 'No autorizado']);
+            return;
+        }
+        
+        $talleres = $this->tallerModel->getAll();
+        
+        if (!$talleres) {
+            $talleres = [];
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode($talleres);
     }
-    
-    header('Content-Type: application/json');
-    echo json_encode($data);
-}
 
     public function aprobar()
     {
