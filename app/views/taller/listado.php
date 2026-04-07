@@ -1,41 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Talleres</title>
 
-    <title>Listado Talleres</title>
+    <link rel="stylesheet" href="public/css/style.css">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet">
     <script src="public/js/jquery-4.0.0.min.js"></script>
-</head>
+    <script src="public/js/taller.js"></script>
+<body>
 
-<body class="container mt-5">
+<nav class="navbar">
+    <div class="navbar-container">
 
-    <nav>
-        <div>
-            <a href="index.php?page=talleres">Talleres</a>
+        <a href="index.php?page=home" class="navbar-brand">
+            Gestión de Talleres
+        </a>
+
+        <div class="navbar-menu">
+
+            <a href="index.php?page=talleres" class="nav-link">
+                Talleres
+            </a>
+
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
-                <a href="index.php?page=admin">Gestionar Solicitudes</a>
+                <a href="index.php?page=admin" class="nav-link">
+                    Gestionar
+                </a>
             <?php endif; ?>
+
+            <span class="user-name">
+                <?= htmlspecialchars($_SESSION['user'] ?? 'Usuario') ?>
+            </span>
+
+            <button id="btnLogout" class="btn btn-outline">
+                Cerrar sesión
+            </button>
+
         </div>
-        <div>
-            <span> <?= htmlspecialchars($_SESSION['nombre'] ?? $_SESSION['user'] ?? 'Usuario') ?></span>
-            <button id="btnLogout" class="btn btn-primary">Cerrar sesión</button>
-        </div>
-    </nav>
-    <main>
-        <h3>Talleres</h3>
-
-        <table class="table table-bordered">
+    </div>
+</nav>
 
 
+<div class="container">
 
-        </table>
-    </main>
+    <div class="page-header">
+        <h2>Talleres disponibles</h2>
+        <p>Selecciona un taller para solicitar inscripción</p>
+    </div>
 
+    <div id="listaTalleres" class="taller-grid">
+        <!-- JS carga talleres aquí -->
+    </div>
 
+</div>
 
 </body>
 

@@ -40,3 +40,20 @@ CREATE TABLE solicitudes (
     FOREIGN KEY (taller_id) REFERENCES talleres(id) ON DELETE CASCADE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+
+-- Insertar datos de prueba
+INSERT INTO usuarios (username, password, rol) VALUES
+('admin', '$2y$10$0wkl2VjqQFNw2X5e.f3Lj.fliI7Etwk8r7bNW.OkqtGi31E8M6nRC', 'admin'),
+('usuario1', '$2y$10$0wkl2VjqQFNw2X5e.f3Lj.fliI7Etwk8r7bNW.OkqtGi31E8M6nRC', 'usuario');
+
+INSERT INTO talleres (nombre, descripcion, cupo_maximo, cupo_disponible) VALUES
+('Taller de PHP', 'Aprende PHP desde cero con MVC', 5, 5),
+('Taller de jQuery', 'DOM, eventos y AJAX', 3, 3),
+('Taller de MySQL', 'Bases de datos relacionales', 4, 4);
+
+SELECT '¡Base de datos reiniciada correctamente!' AS Mensaje;
+SELECT 'Usuarios:' AS Tabla, COUNT(*) FROM usuarios
+UNION ALL
+SELECT 'Talleres:', COUNT(*) FROM talleres
+UNION ALL
+SELECT 'Solicitudes:', COUNT(*) FROM solicitudes;

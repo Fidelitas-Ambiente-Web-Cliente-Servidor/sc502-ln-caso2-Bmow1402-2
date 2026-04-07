@@ -1,43 +1,68 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <link rel="stylesheet" href="public/css/style.css">
 
-    <title>Login</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet">
     <script src="public/js/jquery-4.0.0.min.js"></script>
     <script src="public/js/register.js"></script>
 </head>
 
-<body class="container mt-5">
+<body>
 
-    <h2>Registro</h2>
+<nav class="navbar">
+    <div class="navbar-container">
 
-    <form id="formRegister">
-        <input
-            class="form-control mb-2"
-            name="username"
-            id="username"
-            placeholder="Usuario">
+        <a href="index.php?page=home" class="navbar-brand">
+            Gestión de Talleres
+        </a>
 
-        <input
-            type="password"
-            class="form-control mb-2"
-            name="password"
-            id="password"
-            placeholder="Contraseña">
+        <div class="navbar-menu">
+            <a href="index.php?page=home" class="nav-link">
+                ← Volver al inicio
+            </a>
+        </div>
 
-        <button type="submit" class="btn btn-primary">
-            Ingresar
-        </button>
+    </div>
+</nav>
 
-    </form>
+<div class="auth-container">
 
+    <div class="auth-card">
 
+        <h2>Crear cuenta</h2>
+        <p class="auth-subtitle">Regístrate para continuar</p>
+
+        <form id="formRegister">
+
+            <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Usuario"
+                class="auth-input">
+
+            <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Contraseña"
+                class="auth-input">
+
+            <button type="submit" class="btn btn-primary auth-btn">
+                Registrarse
+            </button>
+
+            <a href="index.php?page=login" class="auth-link">
+                Ya tengo cuenta
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
 
 </body>
-
 </html>

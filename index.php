@@ -8,22 +8,22 @@ require_once './app/models/Taller.php';
 require_once './app/models/Solicitud.php';
 require_once './app/models/User.php';
 
-$page = $_GET['page'] ?? 'login';
+$page = $_GET['page'] ?? 'home';
 
 // ========== RUTAS GET OBTENER DATOS ==========
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // Obtener listado de talleres
-    if ($_GET['option'] ?? "" == "talleres_json") {
+    if (isset($_GET['option']) && $_GET['option'] == "talleres_json") {
         $taller = new TallerController();
         $taller->getTalleresJson();
         exit;
     }
 
     // Obtener solicitudes pendientes
-    if ($_GET['option'] ?? "" == "solicitudes_json") {
+    if (isset($_GET['option']) && $_GET['option'] == "solicitudes_json") {
         $admin = new AdminController();
-        //$admin->getSolicitudesJson();
+        $admin->getSolicitudesJson();
         exit;
     }
 }
@@ -31,37 +31,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 // ========== RUTAS FORMULARIO POST ==========
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if ($_POST['option'] == "login") {
+    if (isset($_POST['option']) && $_POST['option'] == "login") {
         $auth = new UserController();
         $auth->login();
         exit;
     }
 
-    if ($_POST['option'] == "register") {
+    if (isset($_POST['option']) && $_POST['option'] == "register") {
         $auth = new UserController();
         $auth->registro();
         exit;
     }
 
-    if ($_POST['option'] == "logout") {
+    if (isset($_POST['option']) && $_POST['option'] == "logout") {
         $auth = new UserController();
         $auth->logout();
         exit;
     }
 
-    if ($_POST['option'] == "solicitar") {
+    if (isset($_POST['option']) && $_POST['option'] == "solicitar") {
         $taller = new TallerController();
         $taller->solicitar();
         exit;
     }
 
-    if ($_POST['option'] == "aprobar") {
+    if (isset($_POST['option']) && $_POST['option'] == "aprobar") {
         $admin = new AdminController();
         $admin->aprobar();
         exit;
     }
 
-    if ($_POST['option'] == "rechazar") {
+    if (isset($_POST['option']) && $_POST['option'] == "rechazar") {
         $admin = new AdminController();
         $admin->rechazar();
         exit;
@@ -85,13 +85,19 @@ switch ($page) {
         $auth = new UserController();
         $auth->logout();
         break;
+        
     case "registro":
         $auth = new UserController();
         $auth->showRegistro();
         break;
+        
     case "login":
-    default:
         $auth = new UserController();
         $auth->showLogin();
+        break;
+        
+    case "home":
+    default:
+        require_once './app/views/home.php';
         break;
 }

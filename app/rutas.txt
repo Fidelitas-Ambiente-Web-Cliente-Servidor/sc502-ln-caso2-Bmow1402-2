@@ -1,0 +1,7 @@
+index
+
+http://localhost:8080/sc502-ln-caso2-Bmow1402-2/index.php
+
+registro
+
+http://localhost:8080/sc502-ln-caso2-Bmow1402-2/index.php?page=registro

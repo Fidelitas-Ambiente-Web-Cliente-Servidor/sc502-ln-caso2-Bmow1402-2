@@ -39,14 +39,22 @@ class TallerController
     }
     
     public function solicitar()
-    {
-        if (!isset($_SESSION['id'])) {
-            echo json_encode(['success' => false, 'error' => 'Debes iniciar sesión']);
-            return;
-        }
-        
-        $tallerId = $_POST['taller_id'] ?? 0;
-        $usuarioId = $_SESSION['id'];
-
+{
+    if (!isset($_SESSION['id'])) {
+        echo json_encode(['success' => false, 'error' => 'Debes iniciar sesión']);
+        return;
     }
+
+    $tallerId = $_POST['taller_id'];
+    $usuarioId = $_SESSION['id'];
+
+    // crear solicitud en estado pendiente
+    $result = $this->solicitudModel->crear($usuarioId, $tallerId);
+
+    if ($result) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'No se pudo enviar solicitud']);
+    }
+}
 }
