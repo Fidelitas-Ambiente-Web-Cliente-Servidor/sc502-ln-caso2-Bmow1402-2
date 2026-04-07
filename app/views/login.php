@@ -35,9 +35,8 @@
         </form>
         
         <div class="auth-info">
-            <p>Usuario de prueba: usuario1</p>
-            <p>Contraseña: 12345</p>
-            <p>Admin: admin / 12345</p>
+            <p>usuario de prueba: usuario1 2 y 3 / 12345</p>
+            <p>admin: admin / 12345</p>
         </div>
     </div>
 </div>
@@ -48,6 +47,6 @@
             <p>&copy; 2026 Paola Solorzano Mendez.</p>
         </div>
     </footer>
-    
+
 </body>
 </html>

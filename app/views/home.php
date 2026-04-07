@@ -78,7 +78,6 @@
             </div>
         </div>
 
-        <!-- Seccion de detalles de talleres - AHORA DENTRO DEL CONTAINER -->
         <div class="talleres-detalle">
             <h2>Nuestros Talleres</h2>
             <p>Conoce mas sobre los cursos que ofrecemos</p>
